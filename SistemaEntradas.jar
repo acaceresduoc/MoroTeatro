@@ -1,0 +1,127 @@
+package sistemateatromoro;
+
+import java.util.ArrayList;
+import java.util.InputMismatchException;
+import java.util.List;
+import java.util.Scanner;
+
+/**
+ *
+ * @author Angel Cáceres Villanueva
+ */
+
+class SistemaEntradas {
+    private final List<Entrada> entradas;
+
+    public SistemaEntradas() {
+        entradas = new ArrayList<>();
+    }
+
+    public void agregarEntrada(String tipo, String tarifa, String ubicacion, int edad) {
+        Entrada entrada = new Entrada(tipo, tarifa, ubicacion, edad);
+        entradas.add(entrada);
+    }
+
+    public void mostrarEntradas() {
+        for (Entrada entrada : entradas) {
+            System.out.println(entrada);
+        }
+    }
+
+    public static void main(String[] args) {
+        try (Scanner scanner = new Scanner(System.in)) {
+            SistemaEntradas sistema = new SistemaEntradas();
+            boolean salir = false;
+
+            while (!salir) {
+                System.out.println("Menu Principal:");
+                System.out.println("1. Comprar entrada");
+                System.out.println("2. Salir");
+
+                System.out.print("Seleccione una opcion: ");
+                int opcion = 0;
+                try {
+                    opcion = scanner.nextInt();
+                } catch (InputMismatchException e) {
+                    System.out.println("Opcion no valida. Por favor, ingrese un numero.");
+                    scanner.nextLine(); //  limpiar el buffer
+                    continue;
+                }
+                scanner.nextLine(); // limpiar el buffer
+
+                switch (opcion) {
+                    case 1:
+                        boolean realizarOtraCompra = true;
+                        while (realizarOtraCompra) {
+                            try {
+                                System.out.println("Ingrese el tipo de entrada (VIP, Platea baja, Platea alta, Palcos):");
+                                String tipo = scanner.nextLine();
+
+                                System.out.println("Ingrese la tarifa (Estudiante, Publico general):");
+                                String tarifa = scanner.nextLine();
+
+                                System.out.println("Ingrese la ubicacion del asiento (Zona A, Zona B, Zona C):");
+                                String ubicacion = scanner.nextLine();
+
+                                if (!ubicacion.equals("Zona A") && !ubicacion.equals("Zona B") && !ubicacion.equals("Zona C")) {
+                                    System.out.println("Ubicacion no valida. Intente de nuevo.");
+                                    continue;
+                                }
+
+                                System.out.println("Ingrese su edad:");
+                                int edad = scanner.nextInt();
+                                scanner.nextLine(); // limpiar el buffer
+
+                                if (edad < 0) {
+                                    System.out.println("Edad no valida. Intente de nuevo.");
+                                    continue;
+                                }
+
+                                sistema.agregarEntrada(tipo, tarifa, ubicacion, edad);
+
+                                Entrada entrada = sistema.entradas.get(sistema.entradas.size() - 1);
+                                double precioBase = entrada.getPrecio();
+                                double descuento = 0;
+
+                                if (tarifa.equals("Estudiante")) {
+                                    descuento = 0.10;
+                                } else if (edad >= 60) {
+                                    descuento = 0.15;
+                                }
+
+                                double precioFinal = precioBase;
+                                int i = 0;
+                                while (i < 1) {
+                                    precioFinal = precioFinal - (precioFinal * descuento);
+                                    i++;
+                                }
+
+                                System.out.println("Resumen de la compra:");
+                                System.out.println("Ubicacion del asiento: " + ubicacion);
+                                System.out.println("Precio base de la entrada: $" + precioBase);
+                                System.out.println("Descuento aplicado: " + (descuento * 100) + "%");
+                                System.out.println("Precio final a pagar: $" + precioFinal);
+                                System.out.println("Gracias por su compra, disfrute la funcion.");
+
+                                System.out.println("¿Desea realizar otra compra? (si/no):");
+                                String respuesta = scanner.nextLine();
+                                if (!respuesta.equalsIgnoreCase("si")) {
+                                    realizarOtraCompra = false;
+                                }
+                            } catch (InputMismatchException e) {
+                                System.out.println("Entrada no valida. Por favor, intente de nuevo.");
+                                scanner.nextLine(); //  limpiar el buffer
+                            }
+                        }
+                        break;
+                    case 2:
+                        salir = true;
+                        System.out.println("Saliendo del sistema...");
+                        break;
+                    default:
+                        System.out.println("Opción no valida, por favor intente de nuevo.");
+                }
+            }
+        }
+    }
+}
