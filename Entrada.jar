@@ -1,0 +1,40 @@
+package sistemateatromoro;
+
+/**
+ *
+ * @author Angel Cáceres Villanueva
+ */
+
+class Entrada {
+    private final String tipo;
+    private final String tarifa;
+    private final double precio;
+
+
+    public Entrada(String tipo, String tarifa, String ubicacion, int edad) {
+        this.tipo = tipo;
+        this.tarifa = tarifa;
+        this.precio = calcularPrecio(tipo, tarifa);
+    }
+
+    private double calcularPrecio(String tipo, String tarifa) {
+        double precioBase;
+        switch (tipo) {
+            case "VIP" -> precioBase = tarifa.equals("Estudiante") ? 20000 : 30000;
+            case "Platea baja" -> precioBase = tarifa.equals("Estudiante") ? 10000 : 15000;
+            case "Platea alta" -> precioBase = tarifa.equals("Estudiante") ? 9000 : 18000;
+            case "Palcos" -> precioBase = tarifa.equals("Estudiante") ? 6500 : 13000;
+            default -> throw new IllegalArgumentException("Tipo de entrada no valido");
+        }
+        return precioBase;
+    }
+
+    @Override
+    public String toString() {
+        return "Tipo de entrada: " + tipo + ", Tarifa: " + tarifa + ", Precio: $" + precio;
+    }
+    
+    public double getPrecio() {
+        return precio;
+    }
+}
